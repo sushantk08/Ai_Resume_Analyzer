@@ -23,7 +23,7 @@ def create_app():
     from app.routes.upload import upload_bp
     from app.routes.analysis import analysis_bp
     app.register_blueprint(ai_bp, url_prefix="/api")
-    register_error_handlers(app)
+    #register_error_handlers(app)
 
     app.register_blueprint(upload_bp, url_prefix="/api")
     app.register_blueprint(analysis_bp, url_prefix="/api")
