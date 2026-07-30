@@ -10,6 +10,7 @@ from app.extensions import db, migrate
 def create_app():
     app = Flask(__name__)
 
+    # Load configuration
     app.config.from_object(Config)
 
     # Initialize extensions
@@ -17,39 +18,21 @@ def create_app():
     migrate.init_app(app, db)
 
     # ------------------------------------
-    # Configure CORS
+    # Configure CORS (Temporary - Allow All)
     # ------------------------------------
-
-    allowed_origins = [
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-
-        # Production Frontend
-        "https://ai-resume-analyzer-five-rose.vercel.app",
-        "https://ai-resume-analyzer-c43pofy1k-sushant22.vercel.app",
-    ]
-
-    # Optional environment variable
-    frontend_url = os.getenv("FRONTEND_URL")
-    if frontend_url and frontend_url not in allowed_origins:
-        allowed_origins.append(frontend_url)
-
     CORS(
         app,
         resources={
             r"/api/*": {
-                "origins": allowed_origins,
-                "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-                "allow_headers": ["Content-Type", "Authorization"],
+                "origins": "*"
             }
         },
-        supports_credentials=True,
+        supports_credentials=False,
     )
 
     # ------------------------------------
     # Register Blueprints
     # ------------------------------------
-
     from app.routes.upload import upload_bp
     from app.routes.analysis import analysis_bp
     from app.routes.ai import ai_bp
