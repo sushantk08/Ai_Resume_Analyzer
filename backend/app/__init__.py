@@ -21,16 +21,14 @@ def create_app():
     # Configure CORS (Temporary - Allow All)
     # ------------------------------------
     CORS(
-    app,
-    resources={
-        r"/api/*": {
-            "origins": [
-                "https://ai-resume-analyzer-c43pofy1k-sushant22.vercel.app"
-            ]
-        }
-    },
-    supports_credentials=False,
-       )
+        app,
+        resources={
+            r"/api/*": {
+                "origins": "*"
+            }
+        },
+        supports_credentials=False,
+    )
 
     # ------------------------------------
     # Register Blueprints
