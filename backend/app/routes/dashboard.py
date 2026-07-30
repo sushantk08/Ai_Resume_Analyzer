@@ -11,33 +11,34 @@ dashboard_bp = Blueprint("dashboard", __name__)
 
 @dashboard_bp.route("/dashboard", methods=["GET"])
 def dashboard():
-
     try:
-        print("Step 1")
         total_resumes = Resume.query.count()
+        print("✓ Resume query OK")
 
-        print("Step 2")
         total_jobs = JobDescription.query.count()
+        print("✓ JobDescription query OK")
 
-        print("Step 3")
         total_analyses = Analysis.query.count()
+        print("✓ Analysis query OK")
 
-        print("Step 4")
         average_score = db.session.query(
             func.avg(Analysis.ats_score)
         ).scalar()
+        print("✓ Average score query OK")
 
-        print("Step 5")
         latest_resume = (
             Resume.query
             .order_by(Resume.created_at.desc())
             .first()
         )
-
-        print("Step 6")
+        print("✓ Latest resume query OK")
 
         return jsonify({
-            "success": True
+            "success": True,
+            "total_resumes": total_resumes,
+            "total_jobs": total_jobs,
+            "total_analyses": total_analyses,
+            "average_score": average_score
         })
 
     except Exception:
