@@ -20,6 +20,11 @@ class Config:
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "pool_pre_ping": True,
+        "pool_recycle": 300,
+    }
+
     UPLOAD_FOLDER = "app/uploads"
 
     MAX_CONTENT_LENGTH = 5 * 1024 * 1024
