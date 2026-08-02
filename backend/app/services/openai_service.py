@@ -11,16 +11,25 @@ client = genai.Client(
 
 
 def ask_gemini(prompt: str):
-    """
-    Send prompt to Gemini.
-    """
+    try:
+        print(f"Using model: {Config.GEMINI_MODEL}")
 
-    response = client.models.generate_content(
-        model="gemini-2.0-flash",
-        contents=prompt,
-    )
+        response = client.models.generate_content(
+            model=Config.GEMINI_MODEL,
+            contents=prompt,
+        )
 
-    return response.text
+        return response.text
+
+    except Exception as e:
+        import traceback
+
+        print("=" * 80)
+        print("GEMINI ERROR")
+        traceback.print_exc()
+        print("=" * 80)
+
+        raise
 
 
 def generate_resume_feedback(resume_text, job_description):

@@ -29,5 +29,6 @@ class Config:
 
     MAX_CONTENT_LENGTH = 5 * 1024 * 1024
 
-    # Gemini API Key
+    # Gemini Configuration
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+    GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
