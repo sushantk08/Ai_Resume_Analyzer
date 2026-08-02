@@ -1,18 +1,29 @@
-from openai import OpenAI
+import os
+
+from google import genai
 
 from app.config import Config
 
 
-client = OpenAI(
-    api_key=Config.OPENAI_API_KEY
+client = genai.Client(
+    api_key=Config.GEMINI_API_KEY
 )
 
 
-def generate_resume_feedback(resume_text, job_description):
+def ask_gemini(prompt: str):
     """
-    Generate AI feedback for a resume.
+    Send prompt to Gemini.
     """
 
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt,
+    )
+
+    return response.text
+
+
+def generate_resume_feedback(resume_text, job_description):
     prompt = f"""
 You are an experienced technical recruiter.
 
@@ -35,24 +46,15 @@ Job Description:
 {job_description}
 """
 
-    response = client.responses.create(
-        model="gpt-5",
-        input=prompt,
-    )
-
-    return response.output_text
+    return ask_gemini(prompt)
 
 
 def generate_interview_questions(
     resume_text,
-    job_description
+    job_description,
 ):
-    """
-    Generate interview questions.
-    """
-
     prompt = f"""
-Generate ten technical interview questions.
+Generate 10 technical interview questions.
 
 Resume:
 
@@ -63,19 +65,10 @@ Job Description:
 {job_description}
 """
 
-    response = client.responses.create(
-        model="gpt-5",
-        input=prompt,
-    )
-
-    return response.output_text
+    return ask_gemini(prompt)
 
 
 def improve_resume(resume_text):
-    """
-    Rewrite resume professionally.
-    """
-
     prompt = f"""
 Rewrite this resume professionally.
 
@@ -91,26 +84,21 @@ Resume:
 {resume_text}
 """
 
-    response = client.responses.create(
-        model="gpt-5",
-        input=prompt,
-    )
-
-    return response.output_text
+    return ask_gemini(prompt)
 
 
 def keyword_suggestions(
     resume_text,
-    job_description
+    job_description,
 ):
-    """
-    Suggest missing ATS keywords.
-    """
-
     prompt = f"""
-Compare the resume and job description.
+Compare the resume and the job description.
 
-List only the missing ATS keywords.
+Return only:
+
+1. Missing ATS Keywords
+
+2. Suggested Keywords
 
 Resume:
 
@@ -121,9 +109,4 @@ Job Description:
 {job_description}
 """
 
-    response = client.responses.create(
-        model="gpt-5",
-        input=prompt,
-    )
-
-    return response.output_text
+    return ask_gemini(prompt)

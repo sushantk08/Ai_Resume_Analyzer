@@ -29,4 +29,5 @@ class Config:
 
     MAX_CONTENT_LENGTH = 5 * 1024 * 1024
 
-    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+    # Gemini API Key
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
