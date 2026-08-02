@@ -1,37 +1,30 @@
-import os
-
-from google import genai
+from openai import OpenAI
 
 from app.config import Config
 
-
-client = genai.Client(
-    api_key=Config.GEMINI_API_KEY
+client = OpenAI(
+    api_key=Config.GROQ_API_KEY,
+    base_url="https://api.groq.com/openai/v1",
 )
 
-print("Gemini Key Prefix:", Config.GEMINI_API_KEY[:10])
-print("Gemini Model:", Config.GEMINI_MODEL)
 
-def ask_gemini(prompt: str):
-    try:
-        print(f"Using model: {Config.GEMINI_MODEL}")
+def ask_ai(prompt: str):
+    response = client.chat.completions.create(
+        model=Config.GROQ_MODEL,
+        messages=[
+            {
+                "role": "system",
+                "content": "You are an expert ATS Resume Analyzer."
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        temperature=0.3,
+    )
 
-        response = client.models.generate_content(
-            model=Config.GEMINI_MODEL,
-            contents=prompt,
-        )
-
-        return response.text
-
-    except Exception as e:
-        import traceback
-
-        print("=" * 80)
-        print("GEMINI ERROR")
-        traceback.print_exc()
-        print("=" * 80)
-
-        raise
+    return response.choices[0].message.content
 
 
 def generate_resume_feedback(resume_text, job_description):
@@ -57,13 +50,10 @@ Job Description:
 {job_description}
 """
 
-    return ask_gemini(prompt)
+    return ask_ai(prompt)
 
 
-def generate_interview_questions(
-    resume_text,
-    job_description,
-):
+def generate_interview_questions(resume_text, job_description):
     prompt = f"""
 Generate 10 technical interview questions.
 
@@ -76,7 +66,7 @@ Job Description:
 {job_description}
 """
 
-    return ask_gemini(prompt)
+    return ask_ai(prompt)
 
 
 def improve_resume(resume_text):
@@ -95,13 +85,10 @@ Resume:
 {resume_text}
 """
 
-    return ask_gemini(prompt)
+    return ask_ai(prompt)
 
 
-def keyword_suggestions(
-    resume_text,
-    job_description,
-):
+def keyword_suggestions(resume_text, job_description):
     prompt = f"""
 Compare the resume and the job description.
 
@@ -120,4 +107,4 @@ Job Description:
 {job_description}
 """
 
-    return ask_gemini(prompt)
+    return ask_ai(prompt)
