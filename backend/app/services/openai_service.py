@@ -9,6 +9,8 @@ client = genai.Client(
     api_key=Config.GEMINI_API_KEY
 )
 
+print("Gemini Key Prefix:", Config.GEMINI_API_KEY[:10])
+print("Gemini Model:", Config.GEMINI_MODEL)
 
 def ask_gemini(prompt: str):
     try:
