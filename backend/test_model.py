@@ -1,17 +1,19 @@
-from google import genai
+from openai import OpenAI
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+client = OpenAI(
+    api_key=os.getenv("GROQ_API_KEY"),
+    base_url="https://api.groq.com/openai/v1",
+)
 
-try:
-    response = client.models.generate_content(
-        model="gemini-2.0-flash",
-        contents="Say hello"
-    )
-    print(response.text)
-except Exception as e:
-    import traceback
-    traceback.print_exc()
+response = client.chat.completions.create(
+    model="llama-3.3-70b-versatile",
+    messages=[
+        {"role": "user", "content": "Say hello"}
+    ]
+)
+
+print(response.choices[0].message.content)

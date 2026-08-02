@@ -1,6 +1,12 @@
 from openai import OpenAI
+import traceback
 
 from app.config import Config
+
+print("=" * 60)
+print("Groq API Key Loaded:", Config.GROQ_API_KEY is not None)
+print("Groq Model:", Config.GROQ_MODEL)
+print("=" * 60)
 
 client = OpenAI(
     api_key=Config.GROQ_API_KEY,
@@ -9,22 +15,40 @@ client = OpenAI(
 
 
 def ask_ai(prompt: str):
-    response = client.chat.completions.create(
-        model=Config.GROQ_MODEL,
-        messages=[
-            {
-                "role": "system",
-                "content": "You are an expert ATS Resume Analyzer."
-            },
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ],
-        temperature=0.3,
-    )
+    try:
+        print("=" * 60)
+        print("Sending request to Groq...")
+        print("Model:", Config.GROQ_MODEL)
+        print("=" * 60)
 
-    return response.choices[0].message.content
+        response = client.chat.completions.create(
+            model=Config.GROQ_MODEL,
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are an expert ATS Resume Analyzer."
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            temperature=0.3,
+        )
+
+        print("=" * 60)
+        print("Groq Response Received Successfully")
+        print("=" * 60)
+
+        return response.choices[0].message.content
+
+    except Exception as e:
+        print("=" * 60)
+        print("GROQ ERROR")
+        traceback.print_exc()
+        print("Exception:", repr(e))
+        print("=" * 60)
+        raise
 
 
 def generate_resume_feedback(resume_text, job_description):
@@ -49,7 +73,6 @@ Job Description:
 
 {job_description}
 """
-
     return ask_ai(prompt)
 
 
@@ -65,7 +88,6 @@ Job Description:
 
 {job_description}
 """
-
     return ask_ai(prompt)
 
 
@@ -84,7 +106,6 @@ Resume:
 
 {resume_text}
 """
-
     return ask_ai(prompt)
 
 
@@ -106,5 +127,4 @@ Job Description:
 
 {job_description}
 """
-
     return ask_ai(prompt)
