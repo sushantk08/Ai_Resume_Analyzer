@@ -30,5 +30,5 @@ class Config:
     MAX_CONTENT_LENGTH = 5 * 1024 * 1024
 
     # Gemini Configuration
-    GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-    GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+    GROQ_API_KEY = (os.getenv("GROQ_API_KEY") or "").strip()
+    GROQ_MODEL = (os.getenv("GROQ_MODEL") or "llama-3.3-70b-versatile").strip()
